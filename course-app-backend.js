@@ -2,11 +2,13 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const app = express();
+require ('dotenv').config({path:__dirname+'/.env'})
+const db_link = process.env.MONGODB
 const cors = require('cors');
 app.use(express.json());
 app.use(cors()) ;
 
-const SECRET = 'SECr3t';  // This should be in an environment variable in a real application
+const SECRET = 'SECr3t';  
 
 // Define mongoose schemas
 const userSchema = new mongoose.Schema({
@@ -49,9 +51,8 @@ const authenticateJwt = (req, res, next) => {
   }
 };
 
-// Connect to MongoDB
-// DONT MISUSE THIS THANKYOU!!
-mongoose.connect('mongodb://127.0.0.1:27017/');
+
+mongoose.connect(db_link);
 app.get('/admin/me' ,authenticateJwt ,  (req, res)=>{
   
  
@@ -165,4 +166,4 @@ app.get('/users/purchasedCourses', authenticateJwt, async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(3000||process.env.PORT, () => console.log('Server running on port 3000'));
